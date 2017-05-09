@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Signup Page</title>
+</head>
+
+{% extends "base.html" %} {% block content %}
+
+<!-- Submission form for Signup -->
+<form method="post">
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h3> SignUp </h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <table>
+                <tr>
+                    <td> Username </td>
+                    <td>
+                        <input type="text" name="username" value={{username}}> </td>
+                    <td class="errormsg"> {{error}} </td>
+                </tr>
+                <tr>
+                    <td> Password </td>
+                    <td>
+                        <input type="password" name="password" value={{password}}> </td>
+                    <td class="errormsg"> {{errorpw}} </td>
+                </tr>
+                <tr>
+                    <td> Verify Password </td>
+                    <td>
+                        <input type="password" name="verify" value={{verify}}> </td>
+                    <td class="errormsg"> {{errorverify}} </td>
+                </tr>
+                <tr>
+                    <td> Email (optional) </td>
+                    <td>
+                        <input type="text" name="email" value={{email}}> </td>
+                    <td class="errormsg"> {{erroremail}} </td>
+                </tr>
+                <tr>
+                    <td class="lastrow">
+                        <button>Submit</button>
+                    </td>
+                    <td class="lastrow">
+                        <p class="nomargin"> Already registerd? Login <a href="/blog/login"> here! </a> </p>
+                    </td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</form>
+
+{% endblock %}

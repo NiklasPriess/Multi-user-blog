@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Main Page</title>
+</head>
+
+{% extends "base.html" %} {% block content %}
+
+<!-- Render last 10 blog posts on main page -->
+{% for p in posts %} 
+
+    {{ p.render() | safe }}
+
+    <div class="row nomargin">
+        <div class="col-xs-12">
+            <hr class="thin">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+
+            <!-- Links to Like, Comment, Edit or Delete blog posts -->
+            {% set id = "%s" |format(p.key().id()) %}
+            <label class="collapse" for={{id}}>
+                <a class="marginright" href="/blog/likepost/{{id}}" aria-hidden="true">Like</a>
+                <a class="pointer marginright" aria-hidden="true"> Show Comments ({{p.comment|length // 2}}) </a>
+                <a class="fa-thumbs-o-up marginright" aria-hidden="true">{{p.likes}}</a> 
+                {% if user and p.authorid == uid %}
+                <a class="float-right" href="/blog/editpost/{{id}}" aria-hidden="true">Delete</a>
+                <a class="margin float-right" href="/blog/editpost/{{id}}" aria-hidden="true">Edit</a> 
+                {% endif %}
+                <a class="float-right" href="/blog/commentpost/{{id}}" aria-hidden="true">Comment</a>
+            </label>
+
+            <!-- Show all comments of blogpost when clicked -->
+            <input id={{id}} type="checkbox">
+            <div>
+                {% set comment = p.renderc() %} 
+                {% for c in range(0, comment|length, 2) %}
+                <p class="postdate">Comment by {{comment[c]}}</p>
+                <hr class="thin">
+                <p class="marginbot"> {{comment[c+1] | safe}} </p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <br> 
+    
+{% endfor %} 
+{% endblock %}

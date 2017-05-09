@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Permalink Blogpost Page</title>
+</head>
+
+{% extends "base.html" %} {% block content %} 
+
+<!-- Render blog posts on permalink page -->
+{{post.render() | safe}}
+
+<div class="row nomargin">
+    <div class="col-xs-12">
+        <hr class="thin">
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        {% set id = "%s" |format(post.key().id()) %}
+        <label class="collapse" for={{id}}>
+            <a class="marginright" href="/blog/likepost/{{id}}" aria-hidden="true">Like</a>
+            <a class="pointer marginright" aria-hidden="true"> Show Comments ({{post.comment|length // 2}}) </a>
+            <a class="fa-thumbs-o-up marginright" aria-hidden="true">{{post.likes}}</a> 
+            {% if user and post.authorid == uid %}
+            <a class="float-right" href="/blog/editpost/{{id}}" aria-hidden="true">Delete</a>
+            <a class="margin float-right" href="/blog/editpost/{{id}}" aria-hidden="true">Edit</a> 
+            {% endif %}
+            <a class="float-right" href="/blog/commentpost/{{id}}" aria-hidden="true">Comment</a>
+        </label>
+        <input id={{id}} type="checkbox">
+        <div>
+            {% set comment = post.renderc() %} 
+            {% for c in range(0, comment|length, 2) %}
+            <p class="postdate">Comment by {{comment[c]}}</p>
+            <hr class="thin">
+            <p class="marginbot"> {{comment[c+1] | safe}} </p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

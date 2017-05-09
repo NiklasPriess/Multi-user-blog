@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<head>
+    <title>New Post Page</title>
+</head>
+
+{% extends "base.html" %} {% block content %}
+
+<div class="row">
+    <div class="col-xs-12">
+        <h3>New Post</h3>
+    </div>
+</div>
+
+<!-- Submission form to edit or delete the blog post -->
+<form method="post">
+    <div class="row">
+        <div class="col-xs-12">
+            <p>subject</p>
+            <input type="text" class="longinput" name="subject" value="{{subject}}">
+        </div>
+    </div>
+
+    <div class="row nomargin">
+        <div class="col-xs-12">
+            <p>content</p>
+            <textarea name="content">{{content}}</textarea>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="errormsg">
+                <p> {{error}} </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <input type="submit" value="submit">
+        </div>
+    </div>
+</form>
+
+{% endblock %}

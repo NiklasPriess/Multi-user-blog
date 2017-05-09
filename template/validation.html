@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Welcome Page</title>
+</head>
+
+{% extends "base.html" %} {% block content %}
+
+<!-- Welcome page for logged in users -->
+<div class="row">
+    <div class="col-xs-12">
+        <h2> Welcome to my Blog {{user.name}}! </h2>
+    </div>
+</div>
+
+{% endblock %}
