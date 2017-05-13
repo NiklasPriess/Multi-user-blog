@@ -26,7 +26,8 @@ import webapp2
 import time
 import utils
 from string import letters
-from google.appengine.ext import db
+from google.appengine.ext import ndb
+from functools import wraps
 
 
 # Load jinja template
@@ -58,14 +59,6 @@ def valid_email(email):
 
 
 # global functions
-def blog_key(name="default"):
-    return db.Key.from_path("blogs", name)
-
-
-def users_key(group='default'):
-    return db.Key.from_path('users', group)
-
-
 def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params)
@@ -96,3 +89,19 @@ def make_pw_hash(name, pw, salt=None):
 def valid_pw_hash(name, password, h):
     salt = h.split(',')[0]
     return h == make_pw_hash(name, password, salt)
+
+
+# Decoraters in order to check if post/comment exists, if the user is
+# logged in and if the user owns the post/comment
+def post_exists(function):
+    @wraps(function)
+    def wrapper(self, *args, **kwargs):
+        key = ndb.Key('Post', int(args[0]))
+        post = key.get()
+        if post:
+            print(post)
+            return function(self, args[0], post)
+        else:
+            self.error(404)
+            return
+    return wrapper

@@ -26,7 +26,8 @@ import webapp2
 import time
 import utils
 from string import letters
-from google.appengine.ext import db
+from google.appengine.ext import ndb
+
 
 
 # Load jinja template
@@ -58,14 +59,6 @@ def valid_email(email):
 
 
 # global functions
-def blog_key(name="default"):
-    return db.Key.from_path("blogs", name)
-
-
-def users_key(group='default'):
-    return db.Key.from_path('users', group)
-
-
 def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params)

@@ -23,12 +23,6 @@ from bloghandler import BlogHandler
 
 # Handler in order to render a new post on a permalink
 class PostPage(BlogHandler):
-    def get(self, post_id):
-        key = db.Key.from_path("Post", int(post_id), parent=blog_key())
-        post = db.get(key)
-
-        if not post:
-            self.error(404)
-            return
-
-        self.render("permalink.html", post=post, user=self.user, uid=self.uid)
+	@post_exists
+	def get(self, post_id, post):
+		self.render("permalink.html", post=post, uid=self.uid)

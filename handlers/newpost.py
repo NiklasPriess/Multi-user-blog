@@ -37,15 +37,12 @@ class NewPost(BlogHandler):
         # If subject or content is missing rerender the page with errormessage
         if subject and content:
             p = Post(
-                parent=blog_key(),
                 subject=subject,
                 content=content,
-                authorid=self.uid,
-                author=self.user.name,
-                likecount=0)
+                authorid=User.get_by_id(self.uid).key)
             p.put()
 
-            self.redirect("/blog/%s" % str(p.key().id()))
+            self.redirect("/blog/%s" % str(p.key.id()))
         else:
             error = "subject and content please!"
             self.render(

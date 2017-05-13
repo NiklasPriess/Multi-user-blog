@@ -22,32 +22,20 @@ from bloghandler import BlogHandler
 
 # Handler in order to submit blog post edits/deletes
 class EditPost(BlogHandler):
-    def get(self, post_id):
-        if self.user:
-            key = db.Key.from_path("Post", int(post_id), parent=blog_key())
-            post = db.get(key)
 
-            if not post:
-                self.error(404)
-                return
+    @post_exists
+    def get(self, post_id, post):
+        self.render(
+            "editpost.html",
+            post=post,
+            user=self.user,
+            uid=self.uid)
 
-            self.render(
-                "editpost.html",
-                post=post,
-                user=self.user,
-                uid=self.uid)
-        else:
-            self.redirect("/blog/signup")
-
-    def post(self, post_id):
+    @post_exists
+    def post(self, post_id, post):
         content = self.request.get("content")
         subject = self.request.get("subject")
         action = self.request.get("action")
-
-        key = db.Key.from_path("Post", int(post_id), parent=blog_key())
-        post = db.get(key)
-        post.content = content
-        post.subject = subject
 
         # Depending on user submission either edit the post, delete the post
         # or cancel the edit
@@ -55,12 +43,15 @@ class EditPost(BlogHandler):
 
             # Update Post databank with edited post and redirect to permalink
             if subject and content:
+                post.content = content
+                post.subject = subject
                 post.put()
-                self.redirect("/blog/%s" % str(post.key().id()))
+                self.redirect("/blog/%s" % str(post.key.id()))
             else:
                 error = "subject and content please!"
                 self.render(
                     "editpost.html",
+                    post=post,
                     user=self.user,
                     subject=subject,
                     content=content,
@@ -72,6 +63,6 @@ class EditPost(BlogHandler):
 
         # Delete post
         if action == "delete":
-            post.delete()
+            post.key.delete()
             time.sleep(0.2)
             self.redirect("/")

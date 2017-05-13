@@ -23,16 +23,18 @@ from bloghandler import BlogHandler
 
 # Handler in order to like blog posts
 class LikePost(BlogHandler):
-    def get(self, post_id):
-        key = db.Key.from_path("Post", int(post_id), parent=blog_key())
-        post = db.get(key)
+
+    @post_exists
+    def get(self, post_id, post):
 
         # Increase likes in databank +1 if user is logged in, has not liked
         # the post yet and is not the author of the blogpost
         if self.user:
             name = self.user.name
-            if name not in post.likedby and self.uid != post.authorid:
-                post.likecount +=1
+            if name not in post.likedby and self.uid != post.authorid.id():
+                post.likedby = post.likedby + [name]
+                post.put()
+                time.sleep(0.2)
         else:
             self.redirect("/blog/login")
 

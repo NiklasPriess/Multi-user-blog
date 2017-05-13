@@ -15,22 +15,25 @@
 # Parts of this code have been taken from the udacity course material
 
 # Import libraries
-import os
-import math
-import re
-import hashlib
-import random
-import hmac
-import jinja2
-import webapp2
-import time
-import utils
-from string import letters
-from google.appengine.ext import db
+import user
+from utils import *
+from google.appengine.ext import ndb
 
-# Load jinja template
-template_dir = os.path.join(os.path.dirname(__file__), 'template')
-jinja_env = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(template_dir),
-    autoescape=True)
+
+
+# Setting databank properties for Post databank
+class Comment(ndb.Model):
+
+
+    content = ndb.TextProperty(required=True)
+    authorid = ndb.KeyProperty(required=True)
+    postid = ndb.KeyProperty(required=True)
+    likedby = ndb.StringProperty(repeated=True)
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    last_modified = ndb.DateTimeProperty(auto_now=True)
+
+    # Function in order to render comments appropriately
+    def render(self):
+        self._render_text = self.content.replace("\n", "<br>")
+        return self._render_text
 

@@ -18,28 +18,35 @@
 from utils import *
 from models import User
 from models import Post
+from models import Comment
 from bloghandler import BlogHandler
 
 
 # Handler in order to submit comments on blog posts
 class CommentPost(BlogHandler):
-    def get(self, post_id):
-        if self.user:
-            self.render("comment.html", user=self.user)
-        else:
-            self.redirect("/blog/login")
 
-    def post(self, post_id):
-        key = db.Key.from_path("Post", int(post_id), parent=blog_key())
-        post = db.get(key)
+    @post_exists
+    def get(self, post_id, post):
+        self.render("comment.html", user=self.user)
+
+
+    @post_exists
+    def post(self, post_id, post):
         comment = self.request.get("comment")
-        commentlist = [self.user.name, comment]
 
         # Save comment and user Post.comment and redirect to MainPage
         # In case of no comment rerender the page with errormessage
         if comment:
-            post.comment = commentlist + post.comment
+            c = Comment(
+                content=comment,
+                authorid=User.get_by_id(self.uid).key,
+                postid=post.key
+                )
+            c.put()
+            print(c.key)
+            post.comments = post.comments +[c.key]
             post.put()
+            print(post.comments)
             time.sleep(0.2)
             self.redirect("/")
         else:

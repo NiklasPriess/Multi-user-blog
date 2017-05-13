@@ -24,6 +24,6 @@ from bloghandler import BlogHandler
 # Handler in order to render posts on MainPage
 class MainPage(BlogHandler):
     def get(self):
-        post = db.GqlQuery(
-            "select * from Post order by created desc limit 10")
+        qry = Post.query().order(-Post.created)
+        post = qry.fetch(10)
         self.render("mainpage.html", posts=post, user=self.user, uid=self.uid)

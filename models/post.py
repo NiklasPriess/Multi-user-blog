@@ -17,39 +17,30 @@
 # Import libraries
 import user
 from utils import *
-from google.appengine.ext import db
+from google.appengine.ext import ndb
 
 
 
 # Setting databank properties for Post databank
-class Post(db.Model):
+class Post(ndb.Model):
 
 
-    subject = db.StringProperty(required=True)
-    content = db.TextProperty(required=True)
-    authorid = db.IntegerProperty(required=True)
-    author = db.StringProperty(required=True)
-    comment = db.StringListProperty()
-    likedby = db.StringListProperty()
-    created = db.DateTimeProperty(auto_now_add=True)
-    last_modified = db.DateTimeProperty(auto_now=True)
+    subject = ndb.StringProperty(required=True)
+    content = ndb.TextProperty(required=True)
+    authorid = ndb.KeyProperty(required=True)
+    comments = ndb.KeyProperty(repeated=True)
+    likedby = ndb.StringProperty(repeated=True)
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    last_modified = ndb.DateTimeProperty(auto_now=True)
 
 
     @property
     def likes(self):
-        return self.likecount
+        likes = len(self.likedby)
+        return likes
 
 
     # Function in order to render posts appropriately
     def render(self):
         self._render_text = self.content.replace("\n", "<br>")
         return render_str("renderpost.html", p=self)
-
-    # Function in order to render comments appropriately
-    # Post.comment is list with: [user, comment, user, comment ...]
-    def renderc(self):
-        comment = range(len(self.comment))
-        for i in range(1, len(self.comment), 2):
-            comment[i - 1] = self.comment[i - 1]
-            comment[i] = self.comment[i].replace("\n", "<br>")
-        return comment

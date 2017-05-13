@@ -21,12 +21,12 @@
         <div class="col-xs-12">
 
             <!-- Links to Like, Comment, Edit or Delete blog posts -->
-            {% set id = "%s" |format(p.key().id()) %}
+            {% set id = "%s" |format(p.key.id()) %}
             <label class="collapse" for={{id}}>
                 <a class="marginright" href="/blog/likepost/{{id}}" aria-hidden="true">Like</a>
-                <a class="pointer marginright" aria-hidden="true"> Show Comments ({{p.comment|length // 2}}) </a>
+                <a class="pointer marginright" aria-hidden="true"> Show Comments ({{ p.comments|length }}) </a>
                 <a class="fa-thumbs-o-up marginright" aria-hidden="true">{{p.likes}}</a> 
-                {% if user and p.authorid == uid %}
+                {% if p.authorid.id() == uid %}
                 <a class="float-right" href="/blog/editpost/{{id}}" aria-hidden="true">Delete</a>
                 <a class="margin float-right" href="/blog/editpost/{{id}}" aria-hidden="true">Edit</a> 
                 {% endif %}
@@ -36,11 +36,10 @@
             <!-- Show all comments of blogpost when clicked -->
             <input id={{id}} type="checkbox">
             <div>
-                {% set comment = p.renderc() %} 
-                {% for c in range(0, comment|length, 2) %}
-                <p class="postdate">Comment by {{comment[c]}}</p>
+                {% for c in p.comments %}
+                <p class="postdate">Comment by {{c.get().authorid.get().name}}</p>
                 <hr class="thin">
-                <p class="marginbot"> {{comment[c+1] | safe}} </p>
+                <p class="marginbot"> {{c.get().render() | safe}} </p>
                 {% endfor %}
             </div>
         </div>

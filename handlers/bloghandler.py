@@ -43,7 +43,7 @@ class BlogHandler(webapp2.RequestHandler):
         return cookie_val and check_secure_val(cookie_val)
 
     def login(self, user):
-        self.set_secure_cookie("user_id", str(user.key().id()))
+        self.set_secure_cookie("user_id", str(user.key.id()))
 
     def logout(self):
         self.response.headers.add_header("Set-Cookie", "user_id=; Path=/")
@@ -55,4 +55,4 @@ class BlogHandler(webapp2.RequestHandler):
         self.uid = ""
         if uid:
             self.uid = int(uid)
-            self.user = User.by_id(self.uid)
+            self.user = User.get_by_id(self.uid)
