@@ -16,14 +16,19 @@
 
 # Import libraries
 from utils import *
-from models import User
-from models import Post
 from bloghandler import BlogHandler
 
 
-# Handler in order to render a new post on a permalink
-class PostPage(BlogHandler):
+# Handler in order to like blog posts
+# Increase likes in databank +1 if user is logged in, has not liked
+# the post yet and is not the author of the blogpost
+class LikeComment(BlogHandler):
     @user_logged_in
-    @post_exists
-    def get(self, post_id, uid, post):
-        self.render("permalink.html", post=post, uid=uid)
+    @comment_exists
+    def get(self, comment_id, uid, comment):
+        if uid not in comment.likedby and int(uid) != comment.authorid.id():
+            comment.likedby = comment.likedby + [uid]
+            comment.put()
+            time.sleep(0.2)
+
+        self.redirect("/")

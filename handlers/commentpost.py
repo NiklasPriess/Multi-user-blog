@@ -24,14 +24,14 @@ from bloghandler import BlogHandler
 
 # Handler in order to submit comments on blog posts
 class CommentPost(BlogHandler):
-
+    @user_logged_in
     @post_exists
-    def get(self, post_id, post):
-        self.render("comment.html", user=self.user)
+    def get(self, post_id, uid, post):
+        self.render("comment.html")
 
-
+    @user_logged_in
     @post_exists
-    def post(self, post_id, post):
+    def post(self, post_id, uid, post):
         comment = self.request.get("comment")
 
         # Save comment and user Post.comment and redirect to MainPage
@@ -39,20 +39,17 @@ class CommentPost(BlogHandler):
         if comment:
             c = Comment(
                 content=comment,
-                authorid=User.get_by_id(self.uid).key,
+                authorid=User.get_by_id(int(uid)).key,
                 postid=post.key
-                )
+            )
             c.put()
-            print(c.key)
-            post.comments = post.comments +[c.key]
+            post.comments = [c.key] + post.comments
             post.put()
-            print(post.comments)
             time.sleep(0.2)
             self.redirect("/")
         else:
             error = "Enter comment please!"
             self.render(
                 "comment.html",
-                user=self.user,
                 comment=comment,
                 error=error)

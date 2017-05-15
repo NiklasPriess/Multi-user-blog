@@ -26,4 +26,5 @@ class MainPage(BlogHandler):
     def get(self):
         qry = Post.query().order(-Post.created)
         post = qry.fetch(10)
-        self.render("mainpage.html", posts=post, user=self.user, uid=self.uid)
+        uid = (self.read_secure_cookie("user_id"))
+        self.render("mainpage.html", posts=post, uid=uid)

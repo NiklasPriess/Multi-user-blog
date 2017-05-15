@@ -23,6 +23,7 @@ from bloghandler import BlogHandler
 
 # Handler for User Logout and redirection to MainPage
 class Logout(BlogHandler):
-    def get(self):
+    @user_logged_in
+    def get(self, post_id, uid):
         self.logout()
         self.redirect("/")

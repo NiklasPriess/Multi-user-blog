@@ -17,7 +17,6 @@
 # Import libraries
 import webapp2
 from utils import *
-from models import User
 
 
 # Handler for cookies, login/logout and rendering templates
@@ -47,12 +46,3 @@ class BlogHandler(webapp2.RequestHandler):
 
     def logout(self):
         self.response.headers.add_header("Set-Cookie", "user_id=; Path=/")
-
-    def initialize(self, *a, **kw):
-        webapp2.RequestHandler.initialize(self, *a, **kw)
-        uid = (self.read_secure_cookie("user_id"))
-        self.user = ""
-        self.uid = ""
-        if uid:
-            self.uid = int(uid)
-            self.user = User.get_by_id(self.uid)

@@ -23,13 +23,12 @@ from bloghandler import BlogHandler
 
 # Handler in order to submit new Posts
 class NewPost(BlogHandler):
-    def get(self):
-        if self.user:
-            self.render("newpost.html", user=self.user)
-        else:
-            self.redirect("/blog/login")
+    @user_logged_in
+    def get(self, post_id, uid):
+        self.render("newpost.html", uid=uid)
 
-    def post(self):
+    @user_logged_in
+    def post(self, post_id, uid):
         content = self.request.get("content")
         subject = self.request.get("subject")
 
@@ -39,7 +38,7 @@ class NewPost(BlogHandler):
             p = Post(
                 subject=subject,
                 content=content,
-                authorid=User.get_by_id(self.uid).key)
+                authorid=User.get_by_id(int(uid)).key)
             p.put()
 
             self.redirect("/blog/%s" % str(p.key.id()))
@@ -47,7 +46,7 @@ class NewPost(BlogHandler):
             error = "subject and content please!"
             self.render(
                 "newpost.html",
-                user=self.user,
+                uid=uid,
                 subject=subject,
                 content=content,
                 error=error)

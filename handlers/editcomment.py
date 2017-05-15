@@ -17,28 +17,27 @@
 # Import libraries
 from utils import *
 from models import User
-from models import Post
+from models import Comment
 from bloghandler import BlogHandler
 
 
 
-# Handler in order to submit blog post edits/deletes
-class EditPost(BlogHandler):
+# Handler in order to submit blog commment edits/deletes
+class EditComment(BlogHandler):
     @user_logged_in
-    @post_exists
-    @user_owns_post
-    def get(self, post_id, uid, post):
+    @comment_exists
+    @user_owns_comment
+    def get(self, comment_id, uid, comment):
         self.render(
-            "editpost.html",
-            post=post,
+            "editcomment.html",
+            comment=comment,
             uid=uid)
 
     @user_logged_in
-    @post_exists
-    @user_owns_post
-    def post(self, post_id, uid, post):
+    @comment_exists
+    @user_owns_comment
+    def post(self, comment_id, uid, comment):
         content = self.request.get("content")
-        subject = self.request.get("subject")
         action = self.request.get("action")
 
         # Depending on user submission either edit the post, delete the post
@@ -46,18 +45,15 @@ class EditPost(BlogHandler):
         if action == "submit":
 
             # Update Post databank with edited post and redirect to permalink
-            # If content and subject is missing rerender with errormsg
-            if subject and content:
-                post.content = content
-                post.subject = subject
-                post.put()
-                self.redirect("/blog/%s" % str(post.key.id()))
+            if content:
+                comment.content = content
+                comment.put()
+                self.redirect("/")
             else:
-                error = "subject and content please!"
+                error = "Content please!"
                 self.render(
-                    "editpost.html",
-                    post=post,
-                    subject=subject,
+                    "editcomment.html",
+                    comment=comment,
                     content=content,
                     error=error)
 
@@ -65,10 +61,11 @@ class EditPost(BlogHandler):
         if action == "cancel":
             self.redirect("/")
 
-        # Delete post and related comments
+        # Delete post
         if action == "delete":
-            for i in post.comments:
-                i.delete()
-            post.key.delete()
+            post = comment.postid.get()
+            post.comments.remove(comment.key)
+            post.put()
+            comment.key.delete()
             time.sleep(0.2)
             self.redirect("/")

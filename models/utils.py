@@ -29,7 +29,6 @@ from string import letters
 from google.appengine.ext import ndb
 
 
-
 # Load jinja template
 parent_dir = os.path.dirname(os.path.normpath(os.path.dirname(__file__)))
 template_dir = os.path.join(parent_dir, 'template')

@@ -15,15 +15,12 @@
 # Parts of this code have been taken from the udacity course material
 
 # Import libraries
-import user
 from utils import *
 from google.appengine.ext import ndb
 
 
-
 # Setting databank properties for Post databank
 class Comment(ndb.Model):
-
 
     content = ndb.TextProperty(required=True)
     authorid = ndb.KeyProperty(required=True)
@@ -32,8 +29,12 @@ class Comment(ndb.Model):
     created = ndb.DateTimeProperty(auto_now_add=True)
     last_modified = ndb.DateTimeProperty(auto_now=True)
 
+    @property
+    def likes(self):
+        likes = len(self.likedby)
+        return likes
+
     # Function in order to render comments appropriately
     def render(self):
         self._render_text = self.content.replace("\n", "<br>")
         return self._render_text
-

@@ -24,13 +24,15 @@ from bloghandler import BlogHandler
 # Handler for Signup submissions
 class Signup(BlogHandler):
     def get(self):
-        self.render("signup.html", user=self.user)
+        uid = (self.read_secure_cookie("user_id"))
+        self.render("signup.html", uid=uid)
 
     def post(self):
         self.username = self.request.get("username")
         self.password = self.request.get("password")
         self.verify = self.request.get("verify")
         self.email = self.request.get("email")
+        uid = (self.read_secure_cookie("user_id"))
 
         error = ""
         errorpw = ""
@@ -62,7 +64,7 @@ class Signup(BlogHandler):
         if have_error:
             self.render(
                 "signup.html",
-                user=self.user,
+                uid=uid,
                 username=self.username,
                 email=self.email,
                 password=self.password,
@@ -81,7 +83,7 @@ class Signup(BlogHandler):
             msg = "That user already exists."
             self.render(
                 "signup.html",
-                user=self.user,
+                uid=uid,
                 username=self.username,
                 password=self.password,
                 verify=self.verify,

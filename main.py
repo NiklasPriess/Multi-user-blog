@@ -15,9 +15,7 @@
 # Parts of this code have been taken from the udacity course material
 
 # Import libraries
-import jinja2
 import webapp2
-from google.appengine.ext import db
 from handlers import Welcome
 from handlers import CommentPost
 from handlers import EditPost
@@ -28,8 +26,9 @@ from handlers import Signup
 from handlers import MainPage
 from handlers import NewPost
 from handlers import PostPage
-from models import User
-from models import Post
+from handlers import EditComment
+from handlers import LikeComment
+
 
 
 app = webapp2.WSGIApplication([
@@ -43,4 +42,6 @@ app = webapp2.WSGIApplication([
     ("/blog/editpost/([0-9]+)", EditPost),
     ("/blog/commentpost/([0-9]+)", CommentPost),
     ("/blog/likepost/([0-9]+)", LikePost),
+    ("/blog/editcomment/([0-9]+)", EditComment),
+    ("/blog/likecomment/([0-9]+)", LikeComment),
 ], debug=True)

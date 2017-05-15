@@ -24,9 +24,11 @@ from bloghandler import BlogHandler
 # Handler for Login submissions
 class Login(BlogHandler):
     def get(self):
-        self.render("login.html", user=self.user)
+        uid = (self.read_secure_cookie("user_id"))
+        self.render("login.html", uid=uid)
 
     def post(self):
+        uid = (self.read_secure_cookie("user_id"))
         username = self.request.get('username')
         password = self.request.get('password')
 
@@ -39,6 +41,6 @@ class Login(BlogHandler):
             msg = "Invalid login"
             self.render(
                 "login.html",
-                user=self.user,
+                uid=uid,
                 username=username,
                 error=msg)

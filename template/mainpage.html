@@ -26,7 +26,7 @@
                 <a class="marginright" href="/blog/likepost/{{id}}" aria-hidden="true">Like</a>
                 <a class="pointer marginright" aria-hidden="true"> Show Comments ({{ p.comments|length }}) </a>
                 <a class="fa-thumbs-o-up marginright" aria-hidden="true">{{p.likes}}</a> 
-                {% if p.authorid.id() == uid %}
+                {% if p.authorid.id() == uid |int %}
                 <a class="float-right" href="/blog/editpost/{{id}}" aria-hidden="true">Delete</a>
                 <a class="margin float-right" href="/blog/editpost/{{id}}" aria-hidden="true">Edit</a> 
                 {% endif %}
@@ -37,9 +37,19 @@
             <input id={{id}} type="checkbox">
             <div>
                 {% for c in p.comments %}
+                {% set id = "%s" |format(c.id()) %}
+                <br>
                 <p class="postdate">Comment by {{c.get().authorid.get().name}}</p>
                 <hr class="thin">
                 <p class="marginbot"> {{c.get().render() | safe}} </p>
+                <hr class="thin">
+                <a class="marginright" href="/blog/likecomment/{{id}}" aria-hidden="true">Like</a>
+                <a class="fa-thumbs-o-up marginright" aria-hidden="true">{{c.get().likes}}</a>
+                {% if c.get().authorid.id() == uid |int %}
+                <a class="float-right" href="/blog/editcomment/{{id}}" aria-hidden="true">Delete</a>
+                <a class="margin float-right" href="/blog/editcomment/{{id}}" aria-hidden="true">Edit</a> 
+                {% endif %}
+                <br>
                 {% endfor %}
             </div>
         </div>

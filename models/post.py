@@ -15,15 +15,12 @@
 # Parts of this code have been taken from the udacity course material
 
 # Import libraries
-import user
 from utils import *
 from google.appengine.ext import ndb
 
 
-
 # Setting databank properties for Post databank
 class Post(ndb.Model):
-
 
     subject = ndb.StringProperty(required=True)
     content = ndb.TextProperty(required=True)
@@ -33,12 +30,10 @@ class Post(ndb.Model):
     created = ndb.DateTimeProperty(auto_now_add=True)
     last_modified = ndb.DateTimeProperty(auto_now=True)
 
-
     @property
     def likes(self):
         likes = len(self.likedby)
         return likes
-
 
     # Function in order to render posts appropriately
     def render(self):

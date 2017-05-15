@@ -9,3 +9,5 @@ from newpost import NewPost
 from postpage import PostPage
 from welcome import Welcome
 from bloghandler import BlogHandler
+from likecomment import LikeComment
+from editcomment import EditComment

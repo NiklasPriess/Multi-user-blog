@@ -23,7 +23,7 @@ from bloghandler import BlogHandler
 
 # Handler showing the Welcome page after login and registration
 class Welcome(BlogHandler):
-    def get(self):
-        if self.user:
-            self.render("validation.html", user=self.user)
-        else:            self.redirect("/blog/signup")
+    @user_logged_in
+    def get(self, post_id, uid):
+        user = User.get_by_id(int(uid))
+        self.render("validation.html", uid=uid, user=user)

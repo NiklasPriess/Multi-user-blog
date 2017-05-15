@@ -16,26 +16,20 @@
 
 # Import libraries
 from utils import *
-from models import User
-from models import Post
 from bloghandler import BlogHandler
 
 
 # Handler in order to like blog posts
+# Increase likes in databank +1 if user is logged in, has not liked
+# the post yet and is not the author of the blogpost
 class LikePost(BlogHandler):
-
+    @user_logged_in
     @post_exists
-    def get(self, post_id, post):
+    def get(self, post_id, uid, post):
+        if uid not in post.likedby and int(uid) != post.authorid.id():
+            print("test")
+            post.likedby = post.likedby + [uid]
+            post.put()
+            time.sleep(0.2)
 
-        # Increase likes in databank +1 if user is logged in, has not liked
-        # the post yet and is not the author of the blogpost
-        if self.user:
-            name = self.user.name
-            if name not in post.likedby and self.uid != post.authorid.id():
-                post.likedby = post.likedby + [name]
-                post.put()
-                time.sleep(0.2)
-        else:
-            self.redirect("/blog/login")
-
-        self.render("permalink.html", post=post, user=self.user, uid=self.uid)
+        self.redirect("/")

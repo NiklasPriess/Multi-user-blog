@@ -24,7 +24,6 @@ import hmac
 import jinja2
 import webapp2
 import time
-import utils
 from string import letters
 from google.appengine.ext import ndb
 from functools import wraps
@@ -95,13 +94,63 @@ def valid_pw_hash(name, password, h):
 # logged in and if the user owns the post/comment
 def post_exists(function):
     @wraps(function)
-    def wrapper(self, *args, **kwargs):
-        key = ndb.Key('Post', int(args[0]))
+    def wrapper(self, post_id, uid):
+        key = ndb.Key('Post', int(post_id))
         post = key.get()
         if post:
-            print(post)
-            return function(self, args[0], post)
+            return function(self, post_id, uid, post)
         else:
             self.error(404)
+            return
+    return wrapper
+
+
+def comment_exists(function):
+    @wraps(function)
+    def wrapper(self, comment_id, uid):
+        key = ndb.Key('Comment', int(comment_id))
+        comment = key.get()
+        if comment:
+            return function(self, comment_id, uid, comment)
+        else:
+            self.error(404)
+            return
+    return wrapper
+
+
+def user_logged_in(function):
+    @wraps(function)
+    def wrapper(self, *args, **kwargs):
+        uid = (self.read_secure_cookie("user_id"))
+        if uid:
+            if args:
+                post_id = args[0]
+            else:
+                post_id = ""
+            return function(self, post_id, uid)
+        else:
+            self.redirect("/blog/login")
+            return
+    return wrapper
+
+
+def user_owns_post(function):
+    @wraps(function)
+    def wrapper(self, post_id, uid, post):
+        if post.authorid.id() == int(uid):
+            return function(self, post_id, uid, post)
+        else:
+            self.redirect("/")
+            return
+    return wrapper
+
+
+def user_owns_comment(function):
+    @wraps(function)
+    def wrapper(self, comment_id, uid, comment):
+        if comment.authorid.id() == int(uid):
+            return function(self, comment_id, uid, comment)
+        else:
+            self.redirect("/")
             return
     return wrapper
